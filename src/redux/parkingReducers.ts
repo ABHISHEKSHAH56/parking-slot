@@ -40,10 +40,13 @@ const initialState: ServiceState = {
 };
 
 const isBookingActive = (booking:any,bookingDate) => {
-  const bookingStartTime = new Date(booking.startTime);
-  const bookingEndTime = new Date(booking.endTime);
-  const currentTime = new Date(bookingDate);
-  return currentTime >= bookingStartTime && currentTime <= bookingEndTime;
+  console.log("currentDate",booking,bookingDate)
+  const bookingStartTime = new Date(booking.startTime).toLocaleString();
+  const bookingEndTime = new Date(booking.endTime).toLocaleString();
+  const currentTime = new Date(bookingDate).toLocaleString();
+  
+  console.log(currentTime,bookingStartTime,bookingEndTime)
+  return  currentTime <= bookingEndTime;
 };
 
 const ParkingReducers = createSlice({
@@ -70,8 +73,12 @@ const ParkingReducers = createSlice({
             parkingSpaces: state.parkingSpaces.map((space) =>
               space.id === newBooking.parkingSpaceId ? { ...space, isAvailable: false } : space
             ),
+            currentDayBookings:[...state.currentDayBookings,newBooking] 
+        
+            
           };
         }
+        
       } catch (error) {
         console.log(error)
         
@@ -79,7 +86,7 @@ const ParkingReducers = createSlice({
     },
     ParkingSatus:(state,action)=>{
       const { bookingDate } = action.payload;
-      const bookingsForDate = state.bookings.filter((booking) => new Date(booking.bookingDate ).toDateString() == new Date(bookingDate).toDateString());      
+      const bookingsForDate = state.bookings.filter((booking) => new Date(booking.bookingDate ).toDateString() == new Date(bookingDate).toDateString()); 
       state.currentDayBookings=bookingsForDate
       const parkingSpacesForDate = state.parkingSpaces.map((space) => {
         const isAvailable = !bookingsForDate.some(

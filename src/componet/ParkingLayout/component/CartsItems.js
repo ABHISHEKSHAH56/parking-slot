@@ -6,15 +6,16 @@ import { COLORS } from '../../../constants';
 import CarItemsLayout from './CarItemsLayout';
 import { TouchableOpacity } from 'react-native';
 import images from '../../../constants/images';
-import { useEffect } from 'react';
 
-export default function CarItems({item,isRight,setselected,selected,setisBookingDetails}) {
+export default function CarItems({item,setselected,selected,setisBookingDetails}) {
  
    
    
   
     return (
-      <View
+      <>
+      {
+        item &&  <View
         style={{
           height: verticalScale(450),
           width: scale(100),
@@ -66,5 +67,8 @@ export default function CarItems({item,isRight,setselected,selected,setisBooking
           </TouchableOpacity>          
         </View>
       </View>
+      }
+      </>
+     
     );
   }

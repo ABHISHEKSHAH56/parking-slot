@@ -22,7 +22,6 @@ return currentDate
 }
 
 function InputBox({value,handleChange,placeholder,isDisable,errormessage,title}) {
-  console.log("error message",errormessage)
   return (
     <View>
       <View
@@ -80,7 +79,7 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
   const dispatch=useDispatch()
 
   const validateData=()=>{
-    console.log(bookingData,ErrorbookingData)
+    
     setErrorBookingData({})
     if(!bookingData.vehicleType.length) {
       setErrorBookingData({...ErrorbookingData,vehicleType:"Please select the vechile type "})
@@ -190,7 +189,6 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
             title={"vehicleNumber"} 
             pla           
             handleChange={(text)=>{
-              console.log(text.toUpperCase())
               if(isMatching(text)){
                 setBookingData({...bookingData,vehicleNumber:text})
                 setErrorBookingData({})
@@ -233,8 +231,6 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
                 setisBookingVisible(false)
                 setselectedSpace(null)
               }
-              else console.log("pressed-")
-
             }} />
         <DatePicker 
               mode='time'  
@@ -271,7 +267,6 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
                 else {
                   const startTime=new Date(bookingData.startTime)
                   const endTime=new Date(text)
-                  console.log(startTime,endTime)
                   if(startTime>endTime)
                   {
                     setErrorBookingData({...ErrorbookingData,startTime:""})

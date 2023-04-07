@@ -59,7 +59,6 @@ export default function BookingDetails({
     const Bookings = currentDayBookings.find(
       item => item.parkingSpaceId == isBookingDetails,
     );
-    console.log('bookings details ', Bookings);
     if (Bookings) setbookingDetails(Bookings);
     setTimeout(() => {
       setshowLoader(false);

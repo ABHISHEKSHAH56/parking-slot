@@ -5,10 +5,7 @@ import { useSelector } from "react-redux";
 
 function HomeScreen() {
   const bookings=useSelector((state)=>state.ParkingState.bookings)
-  console.log("currentlayout",bookings.forEach(element => {
-    console.log("\n",element)
-    
-  }))
+  console.log("total Bookings",bookings?.length)
  
 
   return (

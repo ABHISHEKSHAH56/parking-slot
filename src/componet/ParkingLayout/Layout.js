@@ -33,7 +33,6 @@ function RoadLayout() {
 
 export default function () {
   const currentDate=useSelector((state)=>state.ParkingState.currentDate)
-  console.log("currentlayout",currentDate)
   const parkingSpaces = useSelector(state => state.ParkingState.parkingSpaces);
   const [selectedSpace, setselectedSpace] = useState('');
   const [isDateVisible, setisDateVisible] = useState(false);
@@ -124,12 +123,15 @@ export default function () {
                 flexDirection: 'column',
               }}>
                 
-              {parkingSpaces.slice(0,10).map((item) => (
+              {parkingSpaces.slice(0,10).map((item,index) => (
                 <CarItems
                   key={item.id}
                   item={item}
+                  index={index}
+                  isRight={true}
                   selected={selectedSpace}
                   setselected={setselectedSpace}
+                  setisBookingDetails={setisBookingDetails}
                 />
               ))}
             </View>

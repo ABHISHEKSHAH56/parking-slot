@@ -37,7 +37,6 @@ export default function DateModal({
           minimumDate={new Date()}
           date={currentDateSelected}
           onDateChange={date => {
-            console.log("datechange",date)
             setcurrentDateSelected(date)
           }}
           mode="date"
