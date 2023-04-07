@@ -72,7 +72,7 @@ export default function BookingDetails({
         onBackdropPress={() => setisBookingDetails(null)}>
         <DialogHeader
           title={'Booking Details'}
-          description={'Please enter the details of your parking Vechile'}
+          description={'Details of your parking Vechile'}
           handleCrossClick={() => setisBookingDetails(null)}
         />
         {showLoader ? (
