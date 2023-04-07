@@ -5,8 +5,10 @@ import { moderateScale ,verticalScale,scale} from '../../../constants/scaling';
 import { TouchableOpacity } from 'react-native';
 import images from '../../../constants/images';
 import { formatDate } from '../../../constants/utility';
+import { useSelector } from 'react-redux';
 
 export default function BottomPart(props) {
+  const currentDate=useSelector((state)=>state.ParkingState.currentDate)
     return (
       <View
         style={{
@@ -155,7 +157,7 @@ export default function BottomPart(props) {
                   fontWeight: 'bold',
                   color:COLORS.light
                 }}>
-                {formatDate(props.data)}
+                {formatDate(currentDate? currentDate : new Date())}
               </Text>
             </View>
           </TouchableOpacity>

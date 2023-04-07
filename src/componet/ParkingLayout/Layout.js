@@ -1,16 +1,16 @@
-import {View, Text, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView} from 'react-native';
+import {View, Text, Image, KeyboardAvoidingView} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {COLORS, Images} from '../../constants';
 import {verticalScale, moderateScale, scale} from '../../constants/scaling';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import DateModal from './Modal/DateModal';
 import CarItems from './component/CartsItems';
 import BottomPart from './component/BottomLayout';
 import BookingModal from './Modal/BookModal';
 import BookingDetails from './Modal/BookingDetails';
 import MessagesDetails from './Modal/MessagesDetails';
-import DialogHeader from '../DialogComponet/dialogheader';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { CurrentDateSet, ParkingSatus } from '../../redux/parkingReducers';
+import LoadingDialog from './Modal/LoadingDialog';
 
 function RoadLayout() {
   return (
@@ -32,17 +32,41 @@ function RoadLayout() {
 }
 
 export default function () {
+  const currentDate=useSelector((state)=>state.ParkingState.currentDate)
+  console.log("currentlayout",currentDate)
   const parkingSpaces = useSelector(state => state.ParkingState.parkingSpaces);
-
   const [selectedSpace, setselectedSpace] = useState('');
   const [isDateVisible, setisDateVisible] = useState(false);
-  const [selectedDate, setselectedDate] = useState(new Date());
   const [isBookingVisible, setisBookingVisible] = useState(false);
   const [isBookingDetails, setisBookingDetails] = useState(false);
   const [isError, setisError] = useState(false)
-  console.log('date', new Date().toLocaleDateString());
+  const [isLoaderVisible, setisLoaderVisible] = useState(false)
+  const dispatch=useDispatch()
+  useEffect(() => {
+
+
+     if(currentDate){
+      setisLoaderVisible(true)
+      setTimeout(() => {
+        setisLoaderVisible(false)
+        
+      }, 1000);    
+      dispatch(ParkingSatus({
+        bookingDate: currentDate ?? new Date().toUTCString()
+      }))
+    
+     }
+  
+    
+  }, [currentDate])
+
+  useEffect(() => {
+    dispatch(CurrentDateSet(new Date()))
+  }, [])
+  
+ 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.light}}>
+    <View style={{flex: 1, backgroundColor: COLORS.light}}>
       <View style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
       <View
         style={{
@@ -138,29 +162,27 @@ export default function () {
             
           </View>
         </View>
-        <Text></Text>
+       
       </View>
       <BottomPart
         selected={selectedSpace}
         setisDateVisible={setisDateVisible}
         setisError={setisError}
-        data={selectedDate}
         onBookPress={() => setisBookingVisible(true)}
       />
       {isDateVisible && (
         <DateModal
           isDateVisible={isDateVisible}
           setisDateVisible={setisDateVisible}
-          selectedDate={selectedDate}
-          setselectedDate={setselectedDate}
+         
         />
       )}
       {isBookingVisible && (
         <BookingModal
           isBookingVisible={isBookingVisible}
           setisBookingVisible={setisBookingVisible}
-          selectedDate={selectedDate}
           selectedSpace={selectedSpace}
+          setselectedSpace={setselectedSpace}
         />
       )}
       {isBookingDetails && (
@@ -179,6 +201,9 @@ export default function () {
           />
         )
       }
-    </SafeAreaView>
+      {
+        isLoaderVisible && <LoadingDialog isloaderVisible={isLoaderVisible} />
+      }
+    </View>
   );
 }

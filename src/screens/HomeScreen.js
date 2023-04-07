@@ -1,20 +1,20 @@
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
-import Modal from "react-native-modal";
-import { COLORS } from "../constants";
+import { Button, SafeAreaView, Text, View } from "react-native";
 import Layout from "../componet/ParkingLayout/Layout";
+import { useSelector } from "react-redux";
 
 function HomeScreen() {
-  const [isModalVisible, setModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  const bookings=useSelector((state)=>state.ParkingState.bookings)
+  console.log("currentlayout",bookings.forEach(element => {
+    console.log("\n",element)
+    
+  }))
+ 
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Layout />
-    </View>
+    </SafeAreaView>
   );
 }
 

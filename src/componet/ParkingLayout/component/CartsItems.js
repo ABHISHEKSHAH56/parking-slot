@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native';
 import images from '../../../constants/images';
 import { useEffect } from 'react';
 
-export default function CarItems({item,isRight,setselected,selected}) {
+export default function CarItems({item,isRight,setselected,selected,setisBookingDetails}) {
  
    
    
@@ -42,6 +42,7 @@ export default function CarItems({item,isRight,setselected,selected}) {
                 if(selected==item.id) setselected(null)
                 else setselected(item.id)
               }
+              else setisBookingDetails(item.id)
               
              
             }}
@@ -52,7 +53,7 @@ export default function CarItems({item,isRight,setselected,selected}) {
               alignItems:"center"
             }}>
             <Image
-              source={!item.isAvailable?images.sedan: images.car}
+              source={item.isAvailable?images.sedan: images.car}
               resizeMode="center"
               style={{
                 height: verticalScale(450),

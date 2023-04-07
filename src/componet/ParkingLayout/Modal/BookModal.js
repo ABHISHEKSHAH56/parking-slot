@@ -1,5 +1,5 @@
 import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dialog} from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
 import {TextInput} from 'react-native';
@@ -9,7 +9,7 @@ import {TouchableOpacity} from 'react-native';
 import {COLORS} from '../../../constants';
 import DialogHeader from '../../DialogComponet/dialogheader';
 import DialogButton from '../../DialogComponet/dialogButton';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BookTheParkingSpace } from '../../../redux/parkingReducers';
 const vehicleNumberRegex = /^[A-Z]{2}\s?[0-9]{1,2}\s?[A-Z]{1,2}\s?[0-9]{4}$/;
 const isMatching =(vehicleNumber)=> {return  vehicleNumberRegex.test(vehicleNumber)}
@@ -62,7 +62,7 @@ function InputBox({value,handleChange,placeholder,isDisable,errormessage,title})
   );
 }
 
-export default function BookingModal({isBookingVisible, setisBookingVisible,selectedSpace,selectedDate}) {
+export default function BookingModal({isBookingVisible, setisBookingVisible,selectedSpace,setselectedSpace}) {
   const [bookingData, setBookingData] = useState({
         vehicleType: "",
         vehicleNumber: "DL 11 XX 1111",
@@ -73,6 +73,10 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
   const [isEndTimeVisible, setisEndTimeVisible] = useState(false)
   const typeOfVechile = ['Two-wheelers', 'Cars','Three-wheelers',"Electric vehicles"];
   const [ErrorbookingData, setErrorBookingData] = useState({});
+ 
+  const currentDate=useSelector((state)=>state.ParkingState.currentDate)
+  const [selectedDate, setselectedDate] = useState(new Date(currentDate))
+  useEffect(() => setselectedDate(new Date(currentDate)),[])
   const dispatch=useDispatch()
 
   const validateData=()=>{
@@ -159,7 +163,7 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
 
          <TouchableOpacity onPress={()=>setisStartTimeVisible(true)}>
          <InputBox
-            placeholder="Start Time of Parking"
+            placeholder={`Start Time of Parking`}
             value={bookingData.startTime?.toLocaleString()}            
             handleChange={(text)=>{}}
             isDisable={true}
@@ -170,7 +174,7 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
          <TouchableOpacity onPress={()=>setisEndTimeVisible(true)}>
          <InputBox
             placeholder="End Time  of Parking"
-            value={bookingData.endTime}            
+            value={bookingData.endTime?.toLocaleString()}            
             handleChange={(text)=>{}}           
             isDisable={true}
             errormessage={ErrorbookingData?.endTime}
@@ -209,15 +213,25 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
             onPress={() => {
               if(validateData())
               {
-                // dispatch(BookTheParkingSpace({
-                  
-
-                // }))
+                
                 console.log({
                   ...bookingData,
                   bookingDate: selectedDate.toUTCString(), 
-                  parkingSpaceId:selectedSpace
+                  parkingSpaceId:selectedSpace,
+                  endTime:bookingData.endTime.toUTCString(),
+                  startTime:bookingData.startTime.toUTCString()
                 })
+                dispatch(BookTheParkingSpace({
+                  ...bookingData,
+                  bookingDate: selectedDate.toUTCString(), 
+                  parkingSpaceId:selectedSpace,
+                  endTime:bookingData.endTime.toUTCString(),
+                  startTime:bookingData.startTime.toUTCString()
+                  
+
+                }))
+                setisBookingVisible(false)
+                setselectedSpace(null)
               }
               else console.log("pressed-")
 
@@ -225,13 +239,13 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
         <DatePicker 
               mode='time'  
               title={"Start Time "} 
-              date={selectedDate}
-              minimumDate={selectedDate}
+              date={selectedDate? selectedDate :new Date()}
+              minimumDate={selectedDate? selectedDate :new Date()}
               androidVariant='nativeAndroid'
               modal={true}
               open={isStartTimeVisible}
               onConfirm={(text)=>{
-                setBookingData({...bookingData,startTime:new Date(text).toUTCString()})
+                setBookingData({...bookingData,startTime:new Date(text)})
                 setErrorBookingData({...ErrorbookingData,startTime:""})
                 setisStartTimeVisible(false)
               }}
@@ -267,7 +281,7 @@ export default function BookingModal({isBookingVisible, setisBookingVisible,sele
                   else{
                     setErrorBookingData({...ErrorbookingData,startTime:""})
                     setErrorBookingData({...ErrorbookingData,endTime:""})
-                    setBookingData({...bookingData,endTime:new Date(text).toUTCString()})
+                    setBookingData({...bookingData,endTime:new Date(text)})
                   }
                 }
                 setisEndTimeVisible(false)

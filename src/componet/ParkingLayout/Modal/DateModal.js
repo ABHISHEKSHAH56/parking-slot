@@ -1,23 +1,23 @@
-import {View, Text, Image} from 'react-native';
-import React from 'react';
+import {View} from 'react-native';
+import React ,{useEffect, useState}from 'react';
 import {Dialog} from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
-import {moderateScale, scale, verticalScale} from '../../../constants/scaling';
-import {COLORS, Images} from '../../constants';
-import images from '../../../constants/images';
+import {scale, verticalScale} from '../../../constants/scaling';
 import DialogHeader from '../../DialogComponet/dialogheader';
 import {getFutureDate} from '../../../utility';
 import DialogButton from '../../DialogComponet/dialogButton';
-import { useDispatch } from 'react-redux';
-import { ParkingSatus } from '../../../redux/parkingReducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { CurrentDateSet } from '../../../redux/parkingReducers';
 
 export default function DateModal({
   isDateVisible,
-  setisDateVisible,
-  selectedDate,
-  setselectedDate,
+  setisDateVisible
 }) {
   const dispatch=useDispatch()
+  const currentDate=useSelector((state)=>state.ParkingState.currentDate)
+  const [currentDateSelected, setcurrentDateSelected] = useState(new Date(currentDate))
+  useEffect(() => setcurrentDateSelected(new Date(currentDate)),[])
+  
   return (
     <View>
       <Dialog
@@ -26,6 +26,7 @@ export default function DateModal({
         <DialogHeader
           title={'Select the Date'}
           description={'Please select the date for bookings'}
+          handleCrossClick={()=>setisDateVisible(false)}
         />
 
         <DatePicker
@@ -34,18 +35,21 @@ export default function DateModal({
             marginVertical: verticalScale(100),
           }}
           minimumDate={new Date()}
-          maximumDate={getFutureDate()}
-          date={selectedDate}
+          date={currentDateSelected}
           onDateChange={date => {
-            console.log('xxx', date);
-            setselectedDate(date);
-            dispatch(ParkingSatus({bookingDate:date.toISOString()}))
+            console.log("datechange",date)
+            setcurrentDateSelected(date)
           }}
           mode="date"
         />
         <DialogButton
           title={"Save Date"}
-          onPress={()=>setisDateVisible(false)}
+          onPress={()=>{
+            dispatch(CurrentDateSet(currentDateSelected))
+           
+            setisDateVisible(false)
+
+          }}
           
           />
       </Dialog>

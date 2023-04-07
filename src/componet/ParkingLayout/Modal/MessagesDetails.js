@@ -14,6 +14,7 @@ export default function MessagesDetails({errorMessage,handleclose,isErrorVisible
         <DialogHeader
           title={'Warning'}
           description={errorMessage}
+          handleCrossClick={handleclose}
         />
 
         
